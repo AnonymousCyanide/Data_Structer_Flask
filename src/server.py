@@ -9,6 +9,7 @@ import linkedlist
 import random
 from BST import BST
 from HashTable import HashTable
+from custom_q import Queue
 #app
 app = Flask(__name__)
 #app config
@@ -166,13 +167,33 @@ def get_one_blog_post(blog_post_id):
         return jsonify({'message':'post not found'}),400
     return jsonify(post)
 
-@app.route('/blog_post/<user_id>',methods=['GET'])
-def get_all_blog_post(user_id):
-    pass
+@app.route('/blog_posts/',methods=['GET'])
+def get_all_blog_post():
+    posts = BlogPost.query.all()
+    q = Queue()
+    for post in posts:
+        q.enqueue(
+            {
+                'title':post.title,
+                'body': post.body
+            }
+            )
+    flist = []
+    for _ in posts:
+        i = q.dequeue()
+        flist.append({
+            'title' : i['title'],
+            'body':i['body']
+        })
+    return jsonify(flist),200
+    
 
 @app.route('/blog_post/<blog_post_id>',methods=['GET'])
 def delete_one_blog_post(blog_post_id):
-    pass
+    post = BlogPost.query.filter_by(id=blog_post_id).first()
+    db.session.delete(post)
+    db.session.commit()
+    return jsonify({'message':'deleted Blog '}) , 200
 
 if __name__ == '__main__':
     app.run(debug=True)
