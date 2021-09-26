@@ -32,7 +32,7 @@ class LinkedList:
             self.size += 1
     def insert_at_end(self,data):
         if self.head is None:
-            self.insert_beginnning(data)
+            self.insert_beginning(data)
         '''if self.last_node is None:
             node = self.head
             while node.next_node:
