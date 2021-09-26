@@ -1,11 +1,13 @@
 from datetime import datetime
-from flask import Flask , request , jsonify
+from flask import Flask, json , request , jsonify
 from sqlite3 import Connection as SQLite3Connection 
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 import linkedlist
+import random
+from BST import BST
 from HashTable import HashTable
 #app
 app = Flask(__name__)
@@ -145,7 +147,24 @@ def create_blog_post(user_id):
 
 @app.route('/blog_post/<blog_post_id>',methods=['GET'])
 def get_one_blog_post(blog_post_id):
-    pass
+    blog_posts = BlogPost.query.all()
+    random.shuffle(blog_posts)
+    tree = BST()
+    for post in blog_posts:
+        tree.insert(
+            {
+                'id':post.id,
+                'title':post.title,
+                'body':post.body,
+                'user_id':post.user_id,
+                
+            }
+        )
+    post = tree.search(blog_post_id)
+    
+    if not post:
+        return jsonify({'message':'post not found'}),400
+    return jsonify(post)
 
 @app.route('/blog_post/<user_id>',methods=['GET'])
 def get_all_blog_post(user_id):
