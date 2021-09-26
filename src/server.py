@@ -89,7 +89,7 @@ def get_all_users_ascending():
     return jsonify(ll.to_array())
 
 
-@app.route('/user/<user_id>',methods=['GETT'])
+@app.route('/user/<user_id>',methods=['GET'])
 def  get_one_user(user_id):
     users = User.query.all()
     ll = linkedlist.LinkedList()
