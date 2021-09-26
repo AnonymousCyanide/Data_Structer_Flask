@@ -6,6 +6,7 @@ from sqlalchemy.engine import Engine
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 import linkedlist
+from HashTable import HashTable
 #app
 app = Flask(__name__)
 #app config
@@ -117,7 +118,29 @@ def delete_user(user_id):
 
 @app.route('/blog_post/<user_id>',methods=['POST'])
 def create_blog_post(user_id):
-    pass
+    data = request.get_json()
+    user = User.query.filter_by(id = user_id).first()
+    if not user:
+        return jsonify({'message':'user dose not exist'}),400
+    ht = HashTable(10)
+    ht.add_key_value('title',data['title'])
+    ht.add_key_value('body',data['body'])
+    ht.add_key_value('date',now)
+    ht.add_key_value('id',user_id)
+   
+    new_blog_post = BlogPost(
+        title =  ht.get_value('title'),
+        body =  ht.get_value('body'),
+        date =  ht.get_value('date'),
+        user_id =  ht.get_value('id'),
+        
+    )
+    
+    db.session.add(new_blog_post)
+    db.session.commit()
+    db.session.close()
+    return jsonify({'message':'new blog created'}),200
+    
 
 
 @app.route('/blog_post/<blog_post_id>',methods=['GET'])
