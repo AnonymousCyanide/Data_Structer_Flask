@@ -56,6 +56,16 @@ class LinkedList:
                 arr.append(node.data)
                 
             return arr
+    def get_user_by_id(self,user_id):
+        
+        node = self.head
+        while node.next_node:
+            
+            if node.data['id'] == int(user_id):
+                return node.data
+            node = node.next_node
+        
+        return {'message':'User not found'}
 if __name__ == '__main__':
     a = LinkedList()
     a.insert_beginning('a')
